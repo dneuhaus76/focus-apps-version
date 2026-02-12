@@ -1,0 +1,19 @@
+name: Update Winget PackageList
+
+on:
+  #push:
+    #branches: [ main ]
+  workflow_dispatch: # Erlaubt manuelles Starten über das GitHub UI
+
+jobs:
+  run-script:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Update-WingetPackageList
+        shell: pwsh
+        run: |
+          ./Update-WingetPackageList.ps1
+          
