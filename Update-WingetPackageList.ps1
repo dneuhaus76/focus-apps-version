@@ -7,10 +7,10 @@ function Update-WingetPackageList {
     )
 
     if (!(Test-Path $DBFilePath)) {
-        New-Item -ItemType Directory -Path $DBFilePath -Force | Out-Null
+        $null = New-Item -ItemType Directory -Path $DBFilePath -Force
     }
 
-    winget source update --disable-interactivity | Out-Null
+    $null = winget source update --disable-interactivity --accept-source-agreements
 
     if (-not (Get-Module -ListAvailable Microsoft.WinGet.Client)) {
         Install-Module Microsoft.WinGet.Client -Scope CurrentUser -Force -AllowClobber
