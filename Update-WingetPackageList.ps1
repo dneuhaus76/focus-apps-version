@@ -19,7 +19,7 @@ function Update-WingetPackageList {
     Import-Module Microsoft.WinGet.Client -Force
 
     $tmp = Find-WinGetPackage -Query "" -Source "winget"
-    $allWingetPackages = $tmp | Select-Object Name, Id, Source, Version | Sort-Object Name, version -Descending
+    $allWingetPackages = $tmp | Select-Object Name, Id, Version, Source | Sort-Object Name, version -Descending
     $allWingetPackages | Export-Csv -Delimiter "`t" -NoTypeInformation -Path "$DBFilePath\$("AllWingetPackages" + ".csv")"
 }
 
