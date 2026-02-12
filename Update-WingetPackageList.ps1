@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = 'SilentlyContinue'
 
 function Update-WingetPackageList {
@@ -10,7 +10,7 @@ function Update-WingetPackageList {
         $null = New-Item -ItemType Directory -Path $DBFilePath -Force
     }
 
-    $null = winget source update --disable-interactivity --accept-source-agreements
+    $null = winget source update --disable-interactivity
 
     if (-not (Get-Module -ListAvailable Microsoft.WinGet.Client)) {
         Install-Module Microsoft.WinGet.Client -Scope CurrentUser -Force -AllowClobber
@@ -18,10 +18,9 @@ function Update-WingetPackageList {
 
     Import-Module Microsoft.WinGet.Client -Force
 
-    Find-WinGetPackage -Source winget |
-        Select Name, Id, Source, Version |
-        Sort Name, Version -Descending |
-        Export-Csv "$DBFilePath\AllWingetPackages.csv" -Delimiter "`t" -NoTypeInformation
+    $tmp = Find-WinGetPackage -Query "" -Source "winget"
+    $allWingetPackages = $tmp | Select-Object Name, Id, Source, Version | Sort-Object Name, version -Descending
+    $allWingetPackages | Export-Csv -Delimiter "`t" -NoTypeInformation -Path "$DBFilePath\$("AllWingetPackages" + ".csv")"
 }
 
 Update-WingetPackageList
