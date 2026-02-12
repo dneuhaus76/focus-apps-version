@@ -1,3 +1,8 @@
+# Verhindert Fehler in CI/CD Umgebungen, falls Module auf $RawUI zugreifen
+if ($null -ne $Host.UI.RawUI) {
+    try { $Host.UI.RawUI.CursorPosition = @{X=0;Y=0} } catch { }
+}
+
 function Update-WingetPackageList {
 
     Param
@@ -6,6 +11,7 @@ function Update-WingetPackageList {
     )
     
     $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue' # Deaktiviert Fortschrittsbalken
     
     # Winget Location & Update
     $appInstaller = Get-AppPackage *Microsoft.DesktopAppInstaller*
