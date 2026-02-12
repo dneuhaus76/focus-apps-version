@@ -12,7 +12,7 @@ function Update-WingetPackageList {
     
     $ErrorActionPreference = 'Stop'
     $ProgressPreference = 'SilentlyContinue' # Deaktiviert Fortschrittsbalken
-    
+    function exclude {    
     # Winget Location & Update
     $appInstaller = Get-AppPackage *Microsoft.DesktopAppInstaller*
     #if ($null -eq $appInstaller) { throw "WinGet (AppInstaller) ist nicht installiert!" }
@@ -20,7 +20,6 @@ function Update-WingetPackageList {
 
     #$ver = & .\winget.exe --version --disable-interactivity
     #Write-Host "winget version $ver before update"
-    function exclude {
     $null = & .\winget.exe source update -n winget --disable-interactivity
     if ($LASTEXITCODE -eq 0) {
         #Write-Host "Winget source update erfolgreich." -ForegroundColor Green
