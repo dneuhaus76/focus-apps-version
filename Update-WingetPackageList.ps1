@@ -20,7 +20,7 @@ function Update-WingetPackageList {
 
     #$ver = & .\winget.exe --version --disable-interactivity
     #Write-Host "winget version $ver before update"
-    
+    function exclude {
     $null = & .\winget.exe source update -n winget --disable-interactivity
     if ($LASTEXITCODE -eq 0) {
         #Write-Host "Winget source update erfolgreich." -ForegroundColor Green
