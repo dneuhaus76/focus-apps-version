@@ -22,6 +22,7 @@ function Update-WingetPackageList {
   
     if (!(Test-Path $DBFilePath)) { $null = New-Item $DBFilePath -Force -ItemType Directory }
 
+    function exclude {
     # --- AUTOMATISIERUNG DER ABHÄNGIGKEITEN ---
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -54,6 +55,7 @@ function Update-WingetPackageList {
         Export-Csv -Delimiter "`t" -NoTypeInformation -Path "$DBFilePath\AllWingetPackages.csv" -Encoding UTF8
 
     Write-Host "File exported: $DBFilePath\AllWingetPackages.csv" -ForegroundColor Green
+    }
 
 }
 
