@@ -32,5 +32,6 @@ jobs:
             Aktualisiert: MO / MI / FR um 12:23.
           files: |
             winget-db/AllWingetPackages.csv
+            winget-db/AllWingetPackages.json
           prerelease: false
           draft: false
