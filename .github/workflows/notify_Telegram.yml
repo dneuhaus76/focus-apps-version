@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: "notify via telegram"
     runs-on: ubuntu-latest
     steps:
       - name: Notify via Telegram
@@ -15,10 +16,11 @@ jobs:
           WORKFLOW_NAME: ${{ github.workflow }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHANNEL_ID: ${{ secrets.TG_CHANNEL_ID }}
+          TG_CHAT_ID: ${{ secrets.CHAT_ID }}
         run: |
-          MESSAGE="✅ *${WORKFLOW_NAME}* %0A%0A*Status:* ${{ job.status }} %0A*User:* ${GITHUB_ACTOR}"
+          MESSAGE="✅ *${WORKFLOW_NAME}* %0A%0A*Status:* ${{ job.status }} %0A*User:* ${{ github.actor }}"
           
           curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
-            -d "tg_channel_id=${TG_CHANNEL_ID}" \
+            -d "chat_id=${TG_CHANNEL_ID}" \
             -d "text=${MESSAGE}" \
             -d "parse_mode=Markdown"
