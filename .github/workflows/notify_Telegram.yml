@@ -1,0 +1,24 @@
+name: Notify via Telegram 
+
+on:
+  #push:
+    #branches: [ "main" ]
+  workflow_dispatch: # Rein manuelles Auslösen aktiv
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify via Telegram
+        if: always()
+        env:
+          WORKFLOW_NAME: ${{ github.workflow }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHANNEL_ID: ${{ secrets.TG_CHANNEL_ID }}
+        run: |
+          MESSAGE="✅ *${WORKFLOW_NAME}* %0A%0A*Status:* ${{ job.status }} %0A*User:* ${GITHUB_ACTOR}"
+          
+          curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            -d "tg_channel_id=${TG_CHANNEL_ID}" \
+            -d "text=${MESSAGE}" \
+            -d "parse_mode=Markdown"
