@@ -18,7 +18,7 @@ function Update-WingetPackageList {
 
     Import-Module Microsoft.WinGet.Client -Force
 
-    $allWingetPackages = @(find-WingetPackage -Query "" -Source "winget" | Select-Object Name, Id, Version, Source | Sort-Object Name, Version)
+    $allWingetPackages = @(find-WingetPackage -Query "*" -Source "winget" | Select-Object Name, Id, Version, Source | Sort-Object Name, Version)
     $allWingetPackages | Export-Csv -Delimiter "`t" -NoTypeInformation -Path "$DBFilePath\$("AllWingetPackages" + ".csv")" -Encoding utf8 -Force
     ConvertTo-Json -Depth 5 -InputObject $($allWingetPackages) | Out-File -FilePath $("$DBFilePath\AllWingetPackages.json") -Encoding utf8 -Force
 }
