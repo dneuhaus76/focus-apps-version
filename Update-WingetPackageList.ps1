@@ -13,29 +13,38 @@ function Update-WingetPackageList {
     }
 
     if (-not (Get-PackageProvider "NuGet")) {
-        $null = Install-PackageProvider -Name "NuGet" -MinimumVersion "2.8.5.201" -Scope AllUsers -Force
+        $msg = Install-PackageProvider -Name "NuGet" -MinimumVersion "2.8.5.201" -Scope AllUsers -Force
+        Write-Output $msg
         $null = Install-PackageProvider -Name "NuGet" -MinimumVersion "2.8.5.201" -Scope CurrentUser -Force
     }
 
-    $null = winget install "Microsoft.AppInstaller" --disable-interactivity
+    #$msg = Stop-Process -Name WindowsPackageManagerServer -Force
+    #Start-Sleep 2
+    #Write-Output $msg
+
+    #$null = winget install "Microsoft.AppInstaller" --disable-interactivity
     #$null = winget upgrade "Microsoft.AppInstaller" --disable-interactivity
+    Start-Process pwsh.exe -ArgumentList('-NoProfile -Command "winget install "Microsoft.AppInstaller" --disable-interactivity --force"') -Wait -WindowStyle Hidden
+    #Write-Output $msg
     $msg = winget source update --disable-interactivity
     Write-Output $msg
 
     if (-not (Get-Module -ListAvailable Microsoft.WinGet.Client)) {
-        $msg = Install-Module Microsoft.WinGet.Client -Scope AllUsers -AllowClobber -Force
-        #$msg = Install-Module Microsoft.WinGet.Client -Scope CurrentUser -AllowClobber -Force
+        #$msg = Install-Module Microsoft.WinGet.Client -Scope AllUsers -AllowClobber -Force
+        $msg = Install-Module Microsoft.WinGet.Client -Scope CurrentUser -AllowClobber -Force
         Write-Output $msg
     }
 
-    $msg = Start-Process pwsh.exe -ArgumentList('-NoProfile -Command "Import-Module Microsoft.WinGet.Client -Force"') -Wait -WindowStyle Hidden
-    Write-Output $msg
+    #$msg = Start-Process pwsh.exe -ArgumentList('-NoProfile -Command "Import-Module Microsoft.WinGet.Client -Force"') -Wait -WindowStyle Hidden
+    #Write-Output $msg
 
+    #Import-Module Microsoft.WinGet.Client -Force
+    
     $allWingetPackages = @()
     $allWingetPackages = @(Find-WinGetPackage -Query "$($Query)" -Source "$($Source)" | Select-Object Name, Id, Version, Source -First 1)
     if ($allWingetPackages.Count -eq 0) {
-        $null = Repair-WinGetPackageManager -Latest -AllUsers -Force
-        #$null = Repair-WinGetPackageManager -Latest -Force
+        #$null = Repair-WinGetPackageManager -Latest -AllUsers -Force
+        $null = Repair-WinGetPackageManager -Latest -Force
     }
     
     Write-Output $allWingetPackages
