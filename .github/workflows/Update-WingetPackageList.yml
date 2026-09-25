@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   run-script:
-    runs-on: windows-latest
+    runs-on: self-hosted
     timeout-minutes: 120
 
     steps:
