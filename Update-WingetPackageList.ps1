@@ -32,7 +32,7 @@ function Update-WingetPackageList {
         $null = Repair-WinGetPackageManager -Latest -Force
     }
 
-    $allWingetPackages = @(Find-WinGetPackage -Query "$($Query)" -Source "$($Source)" | Select-Object Name, Id, Version, Source -First 15 | Sort-Object Name, Version)
+    $allWingetPackages = @(Find-WinGetPackage -Query "$($Query)" -Source "$($Source)" | Select-Object Name, Id, Version, Source | Sort-Object Name, Version)
     if ($allWingetPackages.count -gt 0) {
         $allWingetPackages | Export-Csv -Delimiter "`t" -NoTypeInformation -Path "$DBFilePath\$("AllWingetPackages" + ".csv")" -Encoding utf8 -Force
         ConvertTo-Json -Depth 5 -InputObject $($allWingetPackages) | Out-File -FilePath $("$DBFilePath\AllWingetPackages.json") -Encoding utf8 -Force
