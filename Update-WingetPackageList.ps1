@@ -13,10 +13,16 @@ function Update-WingetPackageList {
     }
 
     if (-not (Get-PackageProvider "NuGet")) {
-        $null = Install-PackageProvider -Name "NuGet" -MinimumVersion "2.8.5.201" -Force
+        $null = Install-PackageProvider -Name "NuGet" -MinimumVersion "2.8.5.201" -Scope AllUsers -Force
+        $null = Install-PackageProvider -Name "NuGet" -MinimumVersion "2.8.5.201" -Scope CurrentUser -Force
     }
 
-    $null = winget source update --disable-interactivity
+    $msg = winget install "Microsoft.AppInstaller" --disable-interactivity
+    Write-Output $msg
+    $msg = winget upgrade "Microsoft.AppInstaller" --disable-interactivity
+    Write-Output $msg
+    $msg = winget source update --disable-interactivity
+    Write-Output $msg
 
     if (-not (Get-Module -ListAvailable Microsoft.WinGet.Client)) {
         $null = Install-Module Microsoft.WinGet.Client -Scope AllUsers -AllowClobber -Force
@@ -24,6 +30,7 @@ function Update-WingetPackageList {
     }
 
     $null = Import-Module Microsoft.WinGet.Client -Force
+    $null = Update-Module Microsoft.WinGet.Client -Force
 
     $allWingetPackages = @()
     $allWingetPackages = @(Find-WinGetPackage -Query "$($Query)" -Source "$($Source)" | Select-Object Name, Id, Version, Source -First 1)
@@ -31,9 +38,10 @@ function Update-WingetPackageList {
         $null = Repair-WinGetPackageManager -Latest -AllUsers -Force
         $null = Repair-WinGetPackageManager -Latest -Force
     }
+    
 
     $allWingetPackages = @(Find-WinGetPackage -Query "$($Query)" -Source "$($Source)" | Select-Object Name, Id, Version, Source | Sort-Object Name, Version)
-    if ($allWingetPackages.count -gt 0) {
+    if ($allWingetPackages -and $allWingetPackages.count -gt 0) {
         $allWingetPackages | Export-Csv -Delimiter "`t" -NoTypeInformation -Path "$DBFilePath\$("AllWingetPackages" + ".csv")" -Encoding utf8 -Force
         ConvertTo-Json -Depth 5 -InputObject $($allWingetPackages) | Out-File -FilePath $("$DBFilePath\AllWingetPackages.json") -Encoding utf8 -Force
     }
